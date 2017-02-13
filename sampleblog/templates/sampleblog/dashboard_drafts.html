@@ -1,0 +1,104 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+  <section >
+    <div class='container'>
+
+      <div >
+        <ul class="nav nav-tabs">
+          <li role="presentation"><a href="{% url 'sampleblog:dashboard' %}">dashboard</a></li>
+          <li role="presentation" class="active"><a href='{% url 'sampleblog:dashboard_drafts' %}'>drafts</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_posts' %}'>published posts</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_comments' %}'>my comments</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_profile' %}'>my profile</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_profile' %}'>account settings</a></li>
+          <li role="presentation"><a href='{% url 'auth:logout' %}'>log out</a></li>
+        </ul>
+      </div>
+
+
+      <div >
+        <div>
+          <h1>Hello, {{current_user.username}}</h1>
+        </div>
+
+        {% if messages %}
+        <div>
+          {% for message in messages %}
+          <div class="{{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <p>{{ message }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div>
+          <a class='btn btn-primary' href='{% url 'sampleblog:dashboard_drafts_add' %}'>add post</a>
+        </div>
+
+        {% if current_drafts_count != 0 %}
+        <div>
+          <h2>My Drafts</h2>
+          {% for draft in current_drafts_current_page %}
+          <div>
+            <div>
+              <h2><a href="{% url 'sampleblog:dashboard_draft_details' draft_slug=draft.slug %}">{{draft.title}}</a></h2>
+              <h4><span class="label label-default">Draft</span></h4>
+            </div>
+
+            <div>
+              <span><a href='{% url 'sampleblog:dashboard_drafts_by_category' category_slug=draft.category.slug %}'>{{draft.category.category}}</a></span>
+            </div>
+
+            <div>
+              <span>{{draft.created_date}} by <a href='{% url 'sampleblog:dashboard_drafts_by_user' user=draft.user.username %}'>{{draft.user.username}}</a></span>
+            </div>
+
+            <div><p>{{draft.text}}</p></div>
+
+            <div>
+              <a class='btn btn-primary' href='{% url 'sampleblog:dashboard_drafts_edit' draft_slug=draft.slug %}'>edit</a>
+              <a class='btn btn-primary' href='{% url 'sampleblog:dashboard_drafts_delete' draft_slug=draft.slug %}'>delete</a>
+              <a class='btn btn-primary' href='{% url 'sampleblog:dashboard_drafts_publish' draft_slug=draft.slug %}'>publish</a>
+            </div>
+          </div>
+          {% endfor %}
+
+          <ul class="pagination">
+            {% if current_drafts_current_page.has_previous %}
+            <li><a href="?page={{ current_drafts_current_page.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in current_drafts_current_page.paginator.page_range %}
+            {% if current_drafts_current_page.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if current_drafts_current_page.has_next %}
+            <li><a href="?page={{ current_drafts_current_page.next_page_number }}">&raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+          </ul>
+
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </section>
+</main>
+
+
+
+
+{% endblock content %}

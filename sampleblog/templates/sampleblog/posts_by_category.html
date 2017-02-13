@@ -1,0 +1,99 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+  <section >
+    <div class='container'>
+
+
+
+
+          <div>
+
+
+
+
+          <h1>{{current_category}}</h1>
+          <h3>{{posts_by_category_count}} {{posts_by_category_state}}</h3>
+
+          {% if messages %}
+          <div>
+            {% for message in messages %}
+            <div class="{{ message.tags }} alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <p>{{ message }}</p>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if posts_by_category_count != 0 %}
+          {% for post in posts_by_category_current_page %}
+          <div class='wrapper'>
+            <div class='wrapper'>
+              <h2><a href="{% url 'sampleblog:post_details' post_slug=post.slug %}">{{post.title}}</a></h2>
+            </div>
+
+            <div class='wrapper'>
+              <a href='{% url 'sampleblog:posts_by_category' category_slug=post.category.slug %}'>{{post.category.category}}</a>
+            </div>
+
+            <div class='wrapper'>
+              <span>{{post.published_date}}</span>
+              <a href='{% url 'sampleblog:posts_by_user' user=post.user.username %}'>{{post.user.username}}</a>
+            </div>
+
+            <div><p>{{post.text}}</p></div>
+
+            <div class='wrapper'>
+              <a class='btn btn-primary' href="{% url 'sampleblog:post_details' post_slug=post.slug %}">view post</a>
+              <a class='btn btn-primary' href="{% url 'sampleblog:post_details' post_slug=post.slug %}">
+                <span class="glyphicon glyphicon-comment"></span> {{post.current_comments_count}}
+              </a>
+
+              <a class='btn btn-primary' href="{% url 'sampleblog:post_details' post_slug=post.slug %}">
+                <span class="glyphicon glyphicon-thumbs-up"></span>
+                <span>{{post.likes}}</span>
+              </a>
+              <a class='btn btn-primary' href="{% url 'sampleblog:post_details' post_slug=post.slug %}">
+                <span class="glyphicon glyphicon-thumbs-down"></span>
+                <span>{{post.dislikes}}</span>
+              </a>
+
+
+            </div>
+          </div>
+          {% endfor %}
+
+
+          <ul class="pagination">
+            {% if posts_by_category_current_page.has_previous %}
+            <li><a href="?page={{ posts_by_category_current_page.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in posts_by_category_current_page.paginator.page_range %}
+            {% if posts_by_category_current_page.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if posts_by_category_current_page.has_next %}
+            <li><a href="?page={{ posts_by_category_current_page.next_page_number }}">&raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+          </ul>
+        </div>
+        {% endif %}
+
+    </div>
+  </section>
+</main>
+
+{% endblock content %}

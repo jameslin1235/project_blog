@@ -1,0 +1,20 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+  <section >
+    <div class='container'>
+      <h1>You have successfully registered.</h1>
+      <a class="btn btn-primary" href="{% url 'auth:login' %}">log in</a>
+    </div>
+  </section>
+</main>
+
+
+
+
+{% endblock content%}

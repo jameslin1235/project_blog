@@ -1,0 +1,98 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+  <section >
+    <div class='container'>
+
+      <div >
+        <ul class="nav nav-tabs">
+          <li role="presentation"><a href="{% url 'sampleblog:dashboard' %}">dashboard</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_drafts' %}'>drafts</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_posts' %}'>published posts</a></li>
+          <li role="presentation" class="active"><a href='{% url 'sampleblog:dashboard_comments' %}'>my comments</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_profile' %}'>my profile</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_profile' %}'>account settings</a></li>
+          <li role="presentation"><a href='{% url 'auth:logout' %}'>log out</a></li>
+        </ul>
+      </div>
+
+      <div >
+        <div>
+          <h1>Hello, {{current_user.username}}</h1>
+        </div>
+
+        {% if messages %}
+        <div>
+          {% for message in messages %}
+          <div class="{{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <p>{{ message }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div>
+          <a class='btn btn-primary' href='{% url 'sampleblog:post_list' %}'>Read the blogs</a>
+        </div>
+
+
+        {% if current_comments_count != 0 %}
+        <div>
+          <h2>my comments</h2>
+          {% for comment in current_comments_current_page %}
+          <div>
+            <div class="media">
+              <div class="media-left">
+                <a href="#">
+                  <img class="media-object" src="{{ current_user.profile.avatar.url }}" alt="Smiley face" width="60px" height="60px" >
+                </a>
+              </div>
+              <div class="media-body">
+
+                <div><p>{{comment.text}}</p></div>
+                <div>
+                  <span>{{comment.created_date}} by <a href='{% url 'sampleblog:posts_by_user' user=comment.user.username %}'>{{comment.user.username}}</a></span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <a class='btn btn-primary' href='{% url 'sampleblog:dashboard_comments_edit' comment_slug=comment.slug %}'>edit</a>
+              <a class='btn btn-primary' href='{% url 'sampleblog:dashboard_comments_delete' comment_slug=comment.slug %}'>delete</a>
+            </div>
+          </div>
+          {% endfor %}
+
+          <ul class="pagination">
+            {% if current_comments_current_page.has_previous %}
+            <li><a href="?page={{ current_comments_current_page.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in current_comments_current_page.paginator.page_range %}
+            {% if current_comments_current_page.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if current_comments_current_page.has_next %}
+            <li><a href="?page={{ current_comments_current_page.next_page_number }}">&raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+          </ul>
+
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock content%}

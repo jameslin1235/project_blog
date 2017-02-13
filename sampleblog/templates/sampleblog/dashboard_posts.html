@@ -1,0 +1,100 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+  <section >
+    <div class='container'>
+
+      <div >
+        <ul class="nav nav-tabs">
+          <li role="presentation"><a href="{% url 'sampleblog:dashboard' %}">dashboard</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_drafts' %}'>drafts</a></li>
+          <li role="presentation" class="active"><a href='{% url 'sampleblog:dashboard_posts' %}'>published posts</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_comments' %}'>my comments</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_profile' %}'>my profile</a></li>
+          <li role="presentation"><a href='{% url 'sampleblog:dashboard_profile' %}'>account settings</a></li>
+          <li role="presentation"><a href='{% url 'auth:logout' %}'>log out</a></li>
+        </ul>
+      </div>
+
+
+      <div >
+        <div>
+          <h1>Hello, {{current_user.username}}</h1>
+        </div>
+
+        {% if messages %}
+        <div>
+          {% for message in messages %}
+          <div class="{{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <p>{{ message }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+
+
+        {% if current_posts_count != 0 %}
+        <div>
+          <h2>Published posts</h2>
+          {% for post in current_posts_current_page %}
+          <div>
+            <div>
+              <h2><a href="{% url 'sampleblog:post_details' post_slug=post.slug %}">{{post.title}}</a></h2>
+            </div>
+
+            <div>
+              <span><a href='{% url 'sampleblog:posts_by_category' category_slug=post.category.slug %}'>{{post.category.category}}</a></span>
+            </div>
+
+            <div>
+              <span>{{post.published_date}} by <a href='{% url 'sampleblog:posts_by_user' user=post.user.username %}'>{{post.user.username}}</a></span>
+            </div>
+
+            <div><p>{{post.text}}</p></div>
+
+            <div>
+              <a class='btn btn-primary' href='{% url 'sampleblog:dashboard_posts_edit' post_slug=post.slug %}'>edit</a>
+              <a class='btn btn-primary' href='{% url 'sampleblog:dashboard_posts_delete' post_slug=post.slug %}'>delete</a>
+            </div>
+          </div>
+          {% endfor %}
+
+          <ul class="pagination">
+            {% if current_posts_current_page.has_previous %}
+            <li><a href="?page={{ current_posts_current_page.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in current_posts_current_page.paginator.page_range %}
+            {% if current_posts_current_page.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if current_posts_current_page.has_next %}
+            <li><a href="?page={{ current_posts_current_page.next_page_number }}">&raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+          </ul>
+
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+  </section>
+</main>
+
+
+
+
+{% endblock content %}

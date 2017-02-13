@@ -1,0 +1,25 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+
+  <section id='login_content'>
+    <div id='login_content_wrapper' class='wrapper'>
+      <h2>Login</h2>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+
+
+
+{% endblock content%}

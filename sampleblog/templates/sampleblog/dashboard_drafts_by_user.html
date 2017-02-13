@@ -1,0 +1,57 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+<section>
+  <div class='container'>
+
+    <div>
+    <h1>Drafts by {{current_user}}</h1>
+    {% for draft in drafts_by_user_current_page %}
+    <div >
+      <div>
+        <h2><a href="{% url 'sampleblog:dashboard_draft_details' draft_slug=draft.slug %}">{{draft.title}}</a></h2>
+        <h4><span class="label label-default">Draft</span></h4>
+      </div>
+
+      <div>
+        <span><a href='{% url 'sampleblog:dashboard_drafts_by_category' category_slug=draft.category.slug %}'>{{draft.category.category}}</a></span>
+      </div>
+
+      <div>
+        <span>{{draft.created_date}} by <a href='{% url 'sampleblog:dashboard_drafts_by_user' user=draft.user.username %}'>{{draft.user.username}}</a></span>
+      </div>
+
+      <div><p>{{draft.text}}</p></div>
+    </div>
+    {% endfor %}
+
+    <ul class="pagination">
+      {% if drafts_by_user_current_page.has_previous %}
+      <li><a href="?page={{ drafts_by_user_current_page.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in drafts_by_user_current_page.paginator.page_range %}
+      {% if drafts_by_user_current_page.number == i %}
+      <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+      <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+      {% endfor %}
+      {% if drafts_by_user_current_page.has_next %}
+      <li><a href="?page={{ drafts_by_user_current_page.next_page_number }}">&raquo;</a></li>
+      {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+
+  </div>
+  </div>
+</section>
+</main>
+{% endblock content %}

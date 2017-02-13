@@ -1,0 +1,33 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+
+  <section >
+    <div class='container'>
+      <div class='row'>
+        <div class='col-lg-4'>
+      <h3>edit comment</h3>
+      <form action="" method='post'>
+        {% csrf_token %}
+        <div class="form-group ">
+          {{ comment_form.text.errors }}
+          {{ comment_form.text.label_tag }}
+          {{ comment_form.text|add_class:"form-control"   }}
+        </div>
+
+        <div><input class="btn btn-primary" id='submit'type='submit' value='edit comment'></div>
+
+      </form>
+  </div>
+</div>
+  </div>
+  </section>
+</main>
+
+
+{% endblock content%}

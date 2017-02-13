@@ -1,0 +1,50 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+
+  <section >
+    <div class='container'>
+      <div class='row'>
+        <div class='col-lg-4'>
+      <h3>edit profile</h3>
+      <form action="" method='post' enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- {{form.as_p}} -->
+        <div class="form-group ">
+          {{ profile_form.first_name.errors }}
+          {{ profile_form.first_name.label_tag }}
+          {{ profile_form.first_name|add_class:"form-control"   }}
+        </div>
+        <div class="form-group">
+          {{ profile_form.last_name.errors }}
+          {{ profile_form.last_name.label_tag }}
+          {{ profile_form.last_name|add_class:"form-control"   }}
+        </div>
+
+        <div class="form-group">
+          {{ profile_form.text.errors }}
+          {{ profile_form.text.label_tag }}
+          {{ profile_form.text|add_class:"form-control"   }}
+        </div>
+
+        <div class="form-group">
+          {{ profile_form.avatar.errors }}
+          {{ profile_form.avatar.label_tag }}
+          {{ profile_form.avatar|add_class:"form-control"   }}
+        </div>
+
+    <div><input class="btn btn-primary" id='submit' type='submit' value='edit profile'></div>
+    </form>
+  </div>
+</div>
+  </div>
+  </section>
+</main>
+
+
+{% endblock content%}

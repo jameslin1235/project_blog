@@ -1,0 +1,288 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+  <section >
+    <div class='container' >
+
+      <div class='wrapper'>
+        <div>
+          <h2><a href="{% url 'sampleblog:post_details' post_slug=current_post.slug %}">{{current_post.title}}</a></h2>
+        </div>
+
+        <div class='wrapper'>
+          <a href='{% url 'sampleblog:posts_by_category' category_slug=current_post.category.slug %}'>{{current_post.category.category}}</a>
+        </div>
+
+        <div class='wrapper'>
+          <span>{{current_post.published_date}}</span>
+          <a href='{% url 'sampleblog:posts_by_user' user=current_post.user.username %}'>{{current_post.user.username}}</a>
+        </div>
+
+        <div>
+          <p>{{current_post.text}}</p>
+        </div>
+
+        <div class='wrapper'>
+
+          <button type="button" class="btn btn-default post_like_button" data-id= "{{current_post.slug}}" >
+            <span class="glyphicon glyphicon-thumbs-up" ></span>
+            <span >{{current_post.likes}}</span>
+          </button>
+          <button type="button" class="btn btn-default post_dislike_button" data-id= "{{current_post.slug}}" >
+            <span class="glyphicon glyphicon-thumbs-down"></span>
+            <span >{{current_post.dislikes}}</span>
+          </button>
+        </div>
+      </div>
+
+
+
+      <div>
+        <div>
+          <h3>{{current_comments_count}} {{current_comments_state}}</h3>
+        </div>
+
+        {% if messages %}
+        <div>
+          {% for message in messages %}
+          <div class="{{ message.tags }} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>
+            <p>{{ message }}</p>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+        <div class='row wrapper'>
+          <div class='col-lg-6'>
+            <form action="" method='post'>
+              {% csrf_token %}
+              <div class="form-group ">
+                {{ comment_form.text.errors }}
+                {{ comment_form.text.label_tag }}
+                {{ comment_form.text|add_class:"form-control"|attr:"rows:5"|attr:"placeholder:Add a comment"  }}
+              </div>
+              <div>
+                <input class="btn btn-primary" id='submit'type='submit' value='Add comment'>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {% else %}
+        <div class='wrapper'>
+          <h3>You must log in to comment.</h3>
+          <a class="btn btn-primary" href="{% url 'auth:login' %}?next={{request.path}}">log in</a>
+        </div>
+        {% endif %}
+
+        {% if current_comments_count != 0 %}
+        <ul class="media-list">
+          {% for comment in current_comments_current_page %}
+          <li class="media">
+            <div class="media-left">
+              <a href="#">
+                <img class="media-object" src='{{ comment.user.profile.avatar.url }}' alt="Smiley face" width="60px" height="60px" >
+              </a>
+            </div>
+            <div class="media-body">
+              <div class='wrapper'>
+                <span>{{comment.created_date}}</span>
+                <a href='{% url 'sampleblog:posts_by_user' user=comment.user.username %}'>{{comment.user.username}}</a>
+              </div>
+
+              <div>
+                <p>{{comment.text}}</p>
+              </div>
+
+              <div class='wrapper'>
+                <div class='wrapper'>
+                  <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#{{comment.id}}largereply">Reply</button>
+                  <button type="button" class="btn btn-default like_button" data-id= "{{comment.slug}}" >
+                    <span class="glyphicon glyphicon-thumbs-up" ></span>
+                    <span >{{comment.likes}}</span>
+                  </button>
+                  <button type="button" class="btn btn-default dislike_button" data-id= "{{comment.slug}}" >
+                    <span class="glyphicon glyphicon-thumbs-down"></span>
+                    <span >{{comment.dislikes}}</span>
+                  </button>
+                </div>
+
+                <div class="collapse" id="{{comment.id}}largereply">
+                  <form action="" method='post'>
+                    {% csrf_token %}
+                    <div class="form-group ">
+                      {{ comment_form.text.errors }}
+                      {{ comment_form.text.label_tag }}
+                      {{ comment_form.text|add_class:"form-control"|attr:"rows:5"   }}
+                    </div>
+                    <div><input type='hidden' name='parent_id' value='{{comment.id}}'></div>
+                    <div><input class="btn btn-default" id='submit' type='submit' value='Reply'></div>
+                  </form>
+                </div>
+              </div>
+
+              <div>
+                <div class='wrapper'>
+                  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#{{comment.id}}replylist">
+                    Show all {{comment.current_replies_count}} replies
+                  </button>
+                </div>
+                <div class="collapse" id="{{comment.id}}replylist">
+                  <ul class="media-list">
+                    {% for reply in comment.replies %}
+                    <li class="media">
+                      <div class="media-left">
+                        <a href="#">
+                          <img class="media-object" src='{{ reply.user.profile.avatar.url }}' alt="Smiley face" width="45px" height="45px" >
+                        </a>
+                      </div>
+
+                      <div class="media-body">
+                        <div class='wrapper'>
+
+                          <span>{{reply.created_date}}</span>
+                          <a href='{% url 'sampleblog:posts_by_user' user=reply.user.username %}'>{{reply.user.username}}</a>
+
+                        </div>
+
+                        <div>
+                          <p>{{reply.text}}</p>
+                        </div>
+
+
+
+                        <div class='wrapper'>
+                          <div class='wrapper'>
+                            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#{{reply.id}}smallreply">Reply</button>
+                            <button type="button" class="btn btn-default like_button" data-id= "{{reply.slug}}" >
+                              <span class="glyphicon glyphicon-thumbs-up" ></span>
+                              <span >{{reply.likes}}</span>
+                            </button>
+                            <button type="button" class="btn btn-default dislike_button" data-id= "{{reply.slug}}" >
+                              <span class="glyphicon glyphicon-thumbs-down"></span>
+                              <span >{{reply.dislikes}}</span>
+                            </button>
+
+
+                          </div>
+                          <div class="collapse" id="{{reply.id}}smallreply">
+                            <form action="" method='post'>
+                              {% csrf_token %}
+                              <div class="form-group ">
+                                {{ comment_form.text.errors }}
+                                {{ comment_form.text.label_tag }}
+                                {{ comment_form.text|add_class:"form-control"|attr:"rows:5"   }}
+                              </div>
+                              <div><input type='hidden' name='parent_id' value='{{comment.id}}'</div>
+                              <div><input class="btn btn-default" id='submit'type='submit' value='Reply'></div>
+                            </form>
+                          </div>
+
+                        </div>
+                      </div>
+                    </li>
+
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+
+
+        <ul class="pagination">
+          {% if current_comments_current_page.has_previous %}
+          <li><a href="?page={{ current_comments_current_page.previous_page_number }}">&laquo;</a></li>
+          {% else %}
+          <li class="disabled"><span>&laquo;</span></li>
+          {% endif %}
+          {% for i in current_comments_current_page.paginator.page_range %}
+          {% if current_comments_current_page.number == i %}
+          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+          {% else %}
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
+          {% endif %}
+          {% endfor %}
+          {% if current_comments_current_page.has_next %}
+          <li><a href="?page={{ current_comments_current_page.next_page_number }}">&raquo;</a></li>
+          {% else %}
+          <li class="disabled"><span>&raquo;</span></li>
+          {% endif %}
+        </ul>
+        {% endif %}
+      </div>
+
+
+      <button id='special' type="button" class="btn btn-default ">
+        <span class="glyphicon glyphicon-thumbs-down"></span>
+        <span>hello there</span>
+      </button>
+
+
+    </div>
+  </section>
+</main>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+
+
+$('.like_button').click(function(){
+
+    var comment_id;
+    comment_id = $(this).attr("data-id");
+    var current_button = $(this);
+    $.get('/blog/comment/like/', {comment_id: comment_id}, function(data){
+       $(current_button).find("span:nth-child(2)").html(data);
+
+    });
+});
+
+$('.dislike_button').click(function(){
+
+    var comment_id;
+    comment_id = $(this).attr("data-id");
+    var current_button = $(this);
+    $.get('/blog/comment/dislike/', {comment_id: comment_id}, function(data){
+          $(current_button).find("span:nth-child(2)").html(data);
+    });
+});
+
+
+$('.post_like_button').click(function(){
+
+    var post_id;
+    post_id = $(this).attr("data-id");
+    var current_button = $(this);
+    $.get('/blog/post/like/', {post_id: post_id}, function(data){
+        $(current_button).find("span:nth-child(2)").html(data);
+
+    });
+});
+
+$('.post_dislike_button').click(function(){
+
+    var post_id;
+    post_id = $(this).attr("data-id");
+    var current_button = $(this);
+    $.get('/blog/post/dislike/', {post_id: post_id}, function(data){
+          $(current_button).find("span:nth-child(2)").html(data);
+    });
+});
+
+
+
+</script>
+
+{% endblock script %}

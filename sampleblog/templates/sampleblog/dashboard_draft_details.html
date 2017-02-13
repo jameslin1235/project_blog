@@ -1,0 +1,38 @@
+{% extends "sampleblog/post_list.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}{% endblock title %}
+
+{% block content %}
+
+<main>
+  <section >
+    <div class='container' >
+
+      <div >
+        <div>
+          <h2><a href="{% url 'sampleblog:dashboard_draft_details' draft_slug=current_draft.slug %}">{{current_draft.title}}</a></h2>
+          <h4><span class="label label-default">Draft</span></h4>
+        </div>
+
+        <div>
+          <span><a href='{% url 'sampleblog:dashboard_drafts_by_category' category_slug=current_draft.category.slug %}'>{{current_draft.category.category}}</a></span>
+        </div>
+
+        <div>
+          <span>{{current_draft.created_date}} by <a href='{% url 'sampleblog:dashboard_drafts_by_user' user=current_draft.user.username %}'>{{current_draft.user.username}}</a></span>
+        </div>
+
+        <div><p>{{current_draft.text}}</p></div>
+      </div>
+
+
+
+
+
+
+
+    </div>
+  </section>
+</main>
+{% endblock content %}
