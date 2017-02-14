@@ -26,7 +26,7 @@ class Category(models.Model):
      ('Health', 'Health'),
      )
      category = models.CharField(max_length=50,choices=categories,)
-     slug = models.SlugField()
+     slug = models.SlugField(default= 10)
      def __str__(self):
              return self.category
 
@@ -43,7 +43,7 @@ class Post(models.Model):
     title = models.CharField(max_length=200,unique=True)
     text = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
-    slug = models.SlugField()
+    slug = models.SlugField(default= 10)
     published_date = models.DateTimeField(blank=True, null=True)
     # # category = models.CharField(max_length=50)
     #
@@ -71,7 +71,7 @@ class Comment(models.Model):
    dislikes = models.IntegerField(null=True,blank=True,default = 0)
    text = models.TextField()
    created_date = models.DateTimeField(default=timezone.now,)
-   slug = models.SlugField()
+   slug = models.SlugField(default= 10)
    comment_id = models.UUIDField(default=uuid.uuid4, editable=False)
    # approved_comment = models.BooleanField(default=False, )
    #
@@ -102,7 +102,7 @@ class Profile(models.Model):
    first_name = models.CharField(max_length=200,)
    last_name = models.CharField(max_length=200,)
    text = models.TextField()
-   avatar = models.ImageField() # or whatever
+   avatar = models.ImageField(default= 10) # or whatever
    created_date = models.DateTimeField(default=timezone.now)
 
 
