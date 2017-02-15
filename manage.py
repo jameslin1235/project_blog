@@ -20,3 +20,5 @@ if __name__ == "__main__":
             )
         raise
     execute_from_command_line(sys.argv)
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "blog.settings.production")
