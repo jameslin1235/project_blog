@@ -1,0 +1,92 @@
+Web Development
+
+Django (framework)
+html, css (bootstrap), javascript (jquery)
+
+
+To deploy this app, 
+Options:
+1. PaaS (Heroku, PythonAnywhere, AWS) 
+*** provides server hardware, os, web&WSGI servers
+*** IaaS, SaaS
+
+SaaS 
+PaaS (for developers so they can focus on coding, easier than IaaS)
+IaaS (provides hardware but you'll have to set up other components of the stack)
+
+In essence, IaaS gives you the hardware but you need to set up things like database, web server, and operating system whereas PaaS set up all these for you so you can only focus on code itself
+
+Regardless of which service you select, knowing the entire process is good
+
+2. Traditional servers
+
+To set up a production environment:
+- computer hardware
+-OS (windows, linux(recommended))
+-framework
+-web server (Nginx, Apache)
+-database (PostgreSQL, MySQL, Oracle and SQLite)
+- application server
+
+
+For development:
+-text editor (atom)
+-python
+-django(framework)
+-pip (package manager, used to download packages)
+-virtualenv (create individual environment for each project)
+-git (version control system that lets you save changes to your source code, stored locally)
+-Github (source code stored online)
+-app dependencies (pypi, a list of packages written by other developers for you to use)
+-heroku CLI
+
+
+To publish your app with setting up infra, 
+Heroku
+-go to your source code folder
+-create local git repo
+-create app
+-deploy
+
+
+-dev server
+-sqlite
+
+Steps for local development
+Same as production except using dev server and sqlite DB
+
+Steps for production on Heroku
+1. download and install Python 
+2. download pip and virtualenv
+3. make a new directory to include everything
+4. inside this directory, setup virtualenv for a project (create one, then activate it/ deactivate when you want to exit)
+5. use pip to install needed packages (including Django) for the project [django, dj-database-url(helps you to connect to the database), gunicorn, whitenoise, psycopg2]
+6. create req.txt file so Heroku knows which packages (app dependencies) to install on their server in order for app to run successfully
+7. start django project and app(start coding within the Django framework)
+8. adjust settings.py, wsgi.py
+9. set up procfile, runtime.txt(python-3.6.0)
+10. use Git (git init(once per project), save changes to your code, create gitignore file)
+11. deploy to heroku
+12. for database data, first send migrations to Heroku server, then from there use 'Heroku run python manage.py migrate' to apply these changes to the connected database
+
+
+
+Static files setup
+***In production, setup static root (a folder where collectstatic will place all static files) and static url(reference to this folder). Then, configure web server to serve contents from static root at the static url. (This is done by Heroku) (Heroku also automatically run collectstatic so static root is instantly filled with latest static files from all other folders)
+***In development, manage.py runserver will make everything work as normal (follow the docs)
+
+1. For each app, create a static folder to store its related resouces
+2. Setup static url(url that points to static root), static root (folder where all static files will be put into during production), staticfiles_dirs (this is optional, to offer paths to other directories where static files can be found)
+*** collectstatic (command) used to launch staticfiles app and put static files into static root
+
+
+
+url = reference to file path
+For example, 
+If static url = '/static/', '/static/' refers to file path of static root(folder where your static files are collected into)
+
+Static root: 'C:\\Users\\mac\\Documents\\project_blog\\blog\\staticfiles'
+Static url refers to this file path
+
+*** If you made changes to static files (images, css, js), push it to Heroku server and run collectstatic from there so the static root folder on Heroku holds the latest static files. The Heroku server is preconfigured to serve static files from static root at the static url(when request is sent to static url, the web server on Heroku gets files from static root)
+
